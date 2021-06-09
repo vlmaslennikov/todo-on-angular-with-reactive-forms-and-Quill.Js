@@ -1,0 +1,22 @@
+<section class="details">
+  <h2 class="title">{{ details.title }}</h2>
+
+  <div class="tools-block">
+    <label class="edit-details"
+      >Edit details
+      <input type="checkbox" #editDetails (click)="canEdit(editDetails)" />
+    </label>
+    <button class="button-save" *ngIf="canEditDetails" (click)="saveChanges()">
+      Save Changes
+    </button>
+  </div>
+
+  <form *ngIf="canEditDetails" [formGroup]="form">
+    <app-quill formControlName="input"></app-quill>
+  </form>
+
+  <p class="details-text" *ngIf="!canEditDetails" #details></p>
+  <button class="button-back-to-main" [routerLink]="['/']">
+    back to main page
+  </button>
+</section>

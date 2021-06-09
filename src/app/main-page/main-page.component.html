@@ -1,0 +1,107 @@
+<section *ngIf="!details" class="todoapp">
+  <header class="header">
+    <div class="toolbar">
+      <div class="toolbar-element">
+        <input
+          id="search-by"
+          (change)="changeTools('search')"
+          class="toolbar-radio"
+          name="toolbar"
+          type="radio"
+        />
+        <label for="search-by">Search by </label>
+
+        <select #search (change)="placeholderForSearch(search.value)">
+          <option value="Name" checked>Name</option>
+          <option value="Date">Date</option>
+        </select>
+      </div>
+
+      <div class="toolbar-element">
+        <input
+          id="sort-by"
+          (change)="changeTools('sort')"
+          class="toolbar-radio"
+          name="toolbar"
+          type="radio"
+        />
+        <label for="sort-by">Sort by date </label>
+        <select (change)="sortBy(sort.value)" #sort>
+          <option value="newest">Newest first</option>
+          <option value="latest">Latest first</option>
+        </select>
+      </div>
+
+      <div class="toolbar-element">
+        <input
+          id="add"
+          (change)="changeTools('add')"
+          class="toolbar-radio"
+          name="toolbar"
+          type="radio"
+          checked
+        />
+        <label for="add">Add todo</label>
+      </div>
+    </div>
+    <input
+      *ngIf="tools.add"
+      (keydown.enter)="addTodo()"
+      [(ngModel)]="title"
+      class="new-todo"
+      placeholder="What needs to be done?"
+    />
+    <input
+      *ngIf="tools.search"
+      (input)="searchTodo($event, search.value)"
+      class="new-todo"
+      #searchInput
+      [placeholder]="searchPlaceholder"
+    />
+  </header>
+  <section class="main">
+    <ul class="todo-list">
+      <li *ngFor="let todo of allTodos">
+        <div class="view" *ngIf="todo.edit === false">
+          <input
+            class="checkbox-toggle"
+            type="checkbox"
+            (change)="changeTodo($event, todo)"
+            [checked]="todo.done"
+          />
+          <div class="todo-main" (dblclick)="canEdit(todo)">
+            <p class="date">{{ todo.date | date: "short" }}</p>
+            <p class="todo-title">{{ todo.title }}</p>
+            <button
+              class="button-change-details"
+              [routerLink]="['/details', todo.id]"
+            >
+              Add/change details
+            </button>
+          </div>
+          <button class="button-destroy" (click)="deleteTodo(todo)"></button>
+        </div>
+        <input
+          type="text"
+          class="edit"
+          #edit
+          *ngIf="todo.edit === true"
+          (keydown.enter)="toEdit(edit, todo)"
+          [value]="todo.title"
+        />
+      </li>
+    </ul>
+  </section>
+  <footer class="footer">
+    <p class="todo-count">
+      <strong>{{ allTodos.length }}</strong> items left
+    </p>
+    <p
+      *ngIf="allCompletedTodos"
+      class="remove-completed"
+      (click)="removeCompleted()"
+    >
+      Clear completed
+    </p>
+  </footer>
+</section>
