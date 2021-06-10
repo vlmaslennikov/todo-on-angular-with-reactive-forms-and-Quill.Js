@@ -23,7 +23,7 @@ export class MainPageComponent implements OnInit {
   constructor(private updateService: UpdateService) {}
 
   ngOnInit() {
-    this.updateService.updateTasksList();
+    this.updateService.updateTasksList('GET_All');
     this.allTodos = this.updateService.allTodosArray;
     this.allCompletedTodos =
       this.allTodos.filter((todo) => todo.done === true).length > 0;
@@ -38,47 +38,57 @@ export class MainPageComponent implements OnInit {
       done: false,
       edit: false,
     };
-    const datenow = String(Date.now());
-    localStorage.setItem(datenow, JSON.stringify(newTodo));
+    const datenow = Date.now();
+    this.updateService.updateTasksList('SET',datenow ,newTodo);
 
-    this.updateService.updateTasksList();
+    // localStorage.setItem(datenow, JSON.stringify(newTodo));
+
+    this.updateService.updateTasksList('GET_All');
     this.allTodos = this.updateService.allTodosArray;
     this.title = '';
   }
 
   changeTodo(value: boolean, todo: TodoInterface): void {
-    localStorage.setItem(
-      todo.id.toString(),
-      JSON.stringify({ ...todo, done: value })
-    );
-    this.updateService.updateTasksList();
+    this.updateService.updateTasksList('SET',todo.id ,{ ...todo, done: value } );
+
+    // localStorage.setItem(
+    //   todo.id.toString(),
+    //   JSON.stringify({ ...todo, done: value })
+    // );
+    this.updateService.updateTasksList('GET_All');
     this.allTodos = this.updateService.allTodosArray;
     this.allCompletedTodos =
       this.allTodos.filter((todo) => todo.done === true).length > 0;
   }
 
   deleteTodo(todo: TodoInterface): void {
-    localStorage.removeItem(todo.id.toString());
-    this.updateService.updateTasksList();
+    this.updateService.updateTasksList('REMOVE',todo.id)
+    // localStorage.removeItem(todo.id.toString());
+    this.updateService.updateTasksList('GET_All');
     this.allTodos = this.updateService.allTodosArray;
   }
 
   canEdit(todo: TodoInterface): void {
-    localStorage.setItem(
-      todo.id.toString(),
-      JSON.stringify({ ...todo, edit: !todo.edit })
-    );
+    this.updateService.updateTasksList('SET',todo.id ,{ ...todo, edit: !todo.edit } );
 
-    this.updateService.updateTasksList();
+
+    // localStorage.setItem(
+    //   todo.id.toString(),
+    //   JSON.stringify({ ...todo, edit: !todo.edit })
+    // );
+
+    this.updateService.updateTasksList('GET_All');
     this.allTodos = this.updateService.allTodosArray;
   }
 
   toEdit(element: HTMLInputElement, todo: TodoInterface): void {
-    localStorage.setItem(
-      todo.id.toString(),
-      JSON.stringify({ ...todo, edit: !todo.edit, title: element.value })
-    );
-    this.updateService.updateTasksList();
+    this.updateService.updateTasksList('SET',todo.id , { ...todo, edit: !todo.edit, title: element.value } );
+
+    // localStorage.setItem(
+    //   todo.id.toString(),
+    //   JSON.stringify({ ...todo, edit: !todo.edit, title: element.value }) ////
+    // );
+    this.updateService.updateTasksList('GET_All');
     this.allTodos = this.updateService.allTodosArray;
   }
 
@@ -96,8 +106,8 @@ export class MainPageComponent implements OnInit {
 
   searchTodo(value:string, parameter: string): void{
     this.allTodos = this.updateService.allTodosArray;
-    switch (true) {
-      case parameter === 'Name':
+    switch (parameter) {
+      case  'Name':
         {
           this.allTodos = this.allTodos.filter((a: TodoInterface) =>
             a.title.includes(value)
@@ -105,7 +115,7 @@ export class MainPageComponent implements OnInit {
         }
         break;
 
-      case parameter === 'Date':
+      case 'Date':
         {
           this.allTodos = this.allTodos.filter((a: any) =>
             a.date.toString().slice(0, 10).includes(value)
@@ -130,9 +140,8 @@ export class MainPageComponent implements OnInit {
 
   removeCompleted(): void{
     this.allTodos
-      .filter((todo) => todo.done === true)
-      .map((todo) => localStorage.removeItem(todo.id.toString()));
-    this.updateService.updateTasksList();
+      .filter((todo) => todo.done === true).map((todo) => this.updateService.updateTasksList('REMOVE',todo.id))////
+    this.updateService.updateTasksList('GET_All');
     this.allTodos = this.updateService.allTodosArray;
   }
 }

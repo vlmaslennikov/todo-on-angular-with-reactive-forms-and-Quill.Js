@@ -9,6 +9,8 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { tap } from 'rxjs/operators';
+import { UpdateService } from '../update.service';
+
 
 @Component({
   selector: 'app-details',
@@ -23,14 +25,17 @@ export class DetailsComponent implements OnInit, AfterViewChecked {
   @ViewChild('details') detailsRef!: ElementRef;
   constructor(
     private readonly formBuilder: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private updateService : UpdateService
   ) {}
 
   ngOnInit(): void {
     this.route.params
       .pipe(
         tap((params) => {
-          this.details = JSON.parse(localStorage.getItem(params.id) as string);
+          this.updateService.updateTasksList('REMOVE',params.id);
+          this.updateService.currentTodo;
+          this.details = JSON.parse(this.updateService.currentTodo);/////
         })
       )
       .subscribe();
@@ -46,10 +51,7 @@ export class DetailsComponent implements OnInit, AfterViewChecked {
   }
 
   saveChanges(): void {
-    localStorage.setItem(
-      this.details.id.toString(),
-      JSON.stringify({ ...this.details, details: this.form.value.input })
-    );
+    this.updateService.updateTasksList('SET',this.details.id ,{ ...this.details, details: this.form.value.input });
     this.details.details = this.form.value.input;
   }
 
