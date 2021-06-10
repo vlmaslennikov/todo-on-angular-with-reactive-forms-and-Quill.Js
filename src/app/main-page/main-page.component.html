@@ -53,7 +53,7 @@
     />
     <input
       *ngIf="tools.search"
-      (input)="searchTodo($event, search.value)"
+      (input)="searchTodo(searchInput.value, search.value)"
       class="new-todo"
       #searchInput
       [placeholder]="searchPlaceholder"
@@ -66,7 +66,8 @@
           <input
             class="checkbox-toggle"
             type="checkbox"
-            (change)="changeTodo($event, todo)"
+            (change)="changeTodo(inputCheckbox.checked, todo)"
+            #inputCheckbox
             [checked]="todo.done"
           />
           <div class="todo-main" (dblclick)="canEdit(todo)">

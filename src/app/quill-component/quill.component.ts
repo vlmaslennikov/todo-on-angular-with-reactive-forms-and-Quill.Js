@@ -78,7 +78,7 @@ export class QuillComponent
     this.onTouch = fn;
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.initialInputValue.unsubscribe();
   }
 }

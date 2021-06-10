@@ -40,7 +40,7 @@ export class DetailsComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewChecked():void{
     if (this.detailsRef)
       this.detailsRef.nativeElement.innerHTML = this.details.details;
   }
@@ -53,7 +53,7 @@ export class DetailsComponent implements OnInit, AfterViewChecked {
     this.details.details = this.form.value.input;
   }
 
-  canEdit(value: HTMLInputElement) {
+  canEdit(value: HTMLInputElement):void{
     this.canEditDetails = value.checked as boolean;
   }
 }

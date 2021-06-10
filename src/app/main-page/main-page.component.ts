@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TodoInterface } from '../interfaces/interface-todo';
 import { ToolbarTools } from '../interfaces/interface-toolbar-tools';
 import { UpdateService } from '../update.service';
@@ -8,7 +8,7 @@ import { UpdateService } from '../update.service';
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss'],
 })
-export class MainPageComponent implements OnInit, OnChanges {
+export class MainPageComponent implements OnInit {
   title!: string;
   allTodos: TodoInterface[] = [];
   searchPlaceholder?: string;
@@ -29,11 +29,6 @@ export class MainPageComponent implements OnInit, OnChanges {
       this.allTodos.filter((todo) => todo.done === true).length > 0;
   }
 
-  ngOnChanges() {
-    this.updateService.updateTasksList();
-    this.allTodos = this.updateService.allTodosArray;
-  }
-
   addTodo(): void {
     const newTodo: TodoInterface = {
       title: this.title,
@@ -51,10 +46,7 @@ export class MainPageComponent implements OnInit, OnChanges {
     this.title = '';
   }
 
-  changeTodo(event: Event, todo: TodoInterface): void {
-    let eventTarget: any = event.target as any;
-    let value: string = eventTarget.checked as string;
-
+  changeTodo(value: boolean, todo: TodoInterface): void {
     localStorage.setItem(
       todo.id.toString(),
       JSON.stringify({ ...todo, done: value })
@@ -71,7 +63,7 @@ export class MainPageComponent implements OnInit, OnChanges {
     this.allTodos = this.updateService.allTodosArray;
   }
 
-  canEdit(todo: TodoInterface) {
+  canEdit(todo: TodoInterface): void {
     localStorage.setItem(
       todo.id.toString(),
       JSON.stringify({ ...todo, edit: !todo.edit })
@@ -81,7 +73,7 @@ export class MainPageComponent implements OnInit, OnChanges {
     this.allTodos = this.updateService.allTodosArray;
   }
 
-  toEdit(element: HTMLInputElement, todo: TodoInterface) {
+  toEdit(element: HTMLInputElement, todo: TodoInterface): void {
     localStorage.setItem(
       todo.id.toString(),
       JSON.stringify({ ...todo, edit: !todo.edit, title: element.value })
@@ -90,7 +82,7 @@ export class MainPageComponent implements OnInit, OnChanges {
     this.allTodos = this.updateService.allTodosArray;
   }
 
-  sortBy(value: string) {
+  sortBy(value: string): void{
     switch (true) {
       case value == 'newest':
         this.allTodos.sort((a: TodoInterface, b: TodoInterface) => b.id - a.id);
@@ -102,11 +94,8 @@ export class MainPageComponent implements OnInit, OnChanges {
     }
   }
 
-  searchTodo(event: Event, parameter: string) {
+  searchTodo(value:string, parameter: string): void{
     this.allTodos = this.updateService.allTodosArray;
-    let eTarget = event.target as any;
-    let value: string = eTarget.value as string;
-
     switch (true) {
       case parameter === 'Name':
         {
@@ -124,23 +113,22 @@ export class MainPageComponent implements OnInit, OnChanges {
         }
         break;
     }
-    console.log('searchInput', this.searchPlaceholder);
   }
 
-  changeTools(value: string) {
+  changeTools(value: string): void {
     for (let tool in this.tools) {
       tool == value ? (this.tools[value] = true) : (this.tools[tool] = false);
     }
     if (value == 'search') this.searchPlaceholder = 'What needs to be search?';
   }
 
-  placeholderForSearch(searchValue: string) {
+  placeholderForSearch(searchValue: string): void {
     searchValue == 'Name'
       ? (this.searchPlaceholder = 'What needs to be search?')
       : (this.searchPlaceholder = 'Enter the date in the format : YYYY-MM-DD');
   }
 
-  removeCompleted() {
+  removeCompleted(): void{
     this.allTodos
       .filter((todo) => todo.done === true)
       .map((todo) => localStorage.removeItem(todo.id.toString()));
