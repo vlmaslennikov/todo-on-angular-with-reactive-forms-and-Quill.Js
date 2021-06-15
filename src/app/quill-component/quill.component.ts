@@ -6,16 +6,16 @@ import {
   forwardRef,
   OnDestroy,
   ViewChild,
-} from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
-import Quill from 'quill';
+} from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { BehaviorSubject } from "rxjs";
+import Quill from "quill";
 
 @Component({
-  selector: 'app-quill',
+  selector: "app-quill",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './quill.component.html',
-  styleUrls: ['./quill.component.scss'],
+  templateUrl: "./quill.component.html",
+  styleUrls: ["./quill.component.scss"],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -28,9 +28,9 @@ export class QuillComponent
   implements AfterViewInit, ControlValueAccessor, OnDestroy
 {
   editor!: Quill;
-  @ViewChild('quill') quillElement!: ElementRef<HTMLElement>;
+  @ViewChild("quill") quillElement!: ElementRef<HTMLElement>;
 
-  initialInputValue = new BehaviorSubject('');
+  initialInputValue = new BehaviorSubject("");
   onChange = (val: any) => {};
   onTouch = (val: any) => {};
 
@@ -38,14 +38,14 @@ export class QuillComponent
     this.editor = new Quill(this.quillElement.nativeElement, {
       modules: {
         toolbar: [
-          ['bold', 'italic', 'underline', 'strike'],
-          ['blockquote', 'code-block'],
+          ["bold", "italic", "underline", "strike"],
+          ["blockquote", "code-block"],
 
           [{ header: 1 }, { header: 2 }],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          [{ script: 'sub' }, { script: 'super' }],
-          [{ indent: '-1' }, { indent: '+1' }],
-          [{ direction: 'rtl' }],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ script: "sub" }, { script: "super" }],
+          [{ indent: "-1" }, { indent: "+1" }],
+          [{ direction: "rtl" }],
 
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
@@ -53,13 +53,13 @@ export class QuillComponent
           [{ font: [] }],
           [{ align: [] }],
 
-          ['clean'],
+          ["clean"],
         ],
       },
-      placeholder: 'Compose an epic...',
-      theme: 'snow',
+      placeholder: "Compose an epic...",
+      theme: "snow",
     });
-    this.editor.on('text-change', () =>
+    this.editor.on("text-change", () =>
       this.onChange(this.editor.root.innerHTML)
     );
 

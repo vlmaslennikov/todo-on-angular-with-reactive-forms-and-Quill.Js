@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { QuillComponent } from './quill-component/quill.component';
 import { DetailsComponent } from './details-page/details.component';
 import { MainPageComponent } from './main-page/main-page.component';
-import { RoutingModule } from './router-module/routing.module';
+import { RoutingModule } from './routing.module';
 
 @NgModule({
   declarations: [

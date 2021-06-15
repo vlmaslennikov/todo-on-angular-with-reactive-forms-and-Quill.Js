@@ -1,4 +1,4 @@
-export interface TodoInterface{
+export interface Todo{
     title:string;
     details:string;
     date:Date,

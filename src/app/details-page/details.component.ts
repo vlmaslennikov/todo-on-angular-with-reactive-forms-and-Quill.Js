@@ -5,57 +5,58 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
-} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { tap } from 'rxjs/operators';
-import { UpdateService } from '../update.service';
-
+} from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { tap } from "rxjs/operators";
+import { Todo } from "../interfaces/todo";
+import { UpdateService } from "../update.service";
 
 @Component({
-  selector: 'app-details',
+  selector: "app-details",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss'],
+  templateUrl: "./details.component.html",
+  styleUrls: ["./details.component.scss"],
 })
 export class DetailsComponent implements OnInit, AfterViewChecked {
-  details: any;
+  description!: Todo;
   form!: FormGroup;
-  canEditDetails: boolean = false;
-  @ViewChild('details') detailsRef!: ElementRef;
+  canEditDetails = false;
+  @ViewChild("details") detailsRef!: ElementRef;
   constructor(
     private readonly formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private updateService : UpdateService
+    private readonly route: ActivatedRoute,
+    private readonly updateService: UpdateService
   ) {}
 
   ngOnInit(): void {
     this.route.params
       .pipe(
         tap((params) => {
-          this.updateService.updateTasksList('REMOVE',params.id);
-          this.updateService.currentTodo;
-          this.details = JSON.parse(this.updateService.currentTodo);/////
+          this.description = this.updateService.getTask(params.id);
         })
       )
       .subscribe();
 
     this.form = this.formBuilder.group({
-      input: [this.details.details],
+      input: [this.description.details],
     });
   }
 
-  ngAfterViewChecked():void{
-    if (this.detailsRef)
-      this.detailsRef.nativeElement.innerHTML = this.details.details;
+  ngAfterViewChecked(): void {
+    if (this.detailsRef) {
+      this.detailsRef.nativeElement.innerHTML = this.description.details;
+    }
   }
-
   saveChanges(): void {
-    this.updateService.updateTasksList('SET',this.details.id ,{ ...this.details, details: this.form.value.input });
-    this.details.details = this.form.value.input;
+    this.updateService.setTask(this.description.id.toString(), {
+      ...this.description,
+      details: this.form.value.input,
+    });
+    this.description.details = this.form.value.input;
   }
 
-  canEdit(value: HTMLInputElement):void{
+  canEdit(value: HTMLInputElement): void {
     this.canEditDetails = value.checked as boolean;
   }
 }
